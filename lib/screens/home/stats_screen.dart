@@ -246,7 +246,7 @@ class _StatsScreenState extends State<StatsScreen> {
     
     return LineChart(
       LineChartData(
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -277,8 +277,8 @@ class _StatsScreenState extends State<StatsScreen> {
               reservedSize: 30,
             ),
           ),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
         borderData: FlBorderData(show: true, border: Border.all(color: Colors.grey.shade300)),
         lineBarsData: [
@@ -288,7 +288,7 @@ class _StatsScreenState extends State<StatsScreen> {
             color: Colors.green,
             barWidth: 3,
             isStrokeCapRound: true,
-            dotData: FlDotData(show: false),
+            dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(show: true, color: Colors.green.withOpacity(0.2)),
           ),
           LineChartBarData(
@@ -297,7 +297,7 @@ class _StatsScreenState extends State<StatsScreen> {
             color: Colors.red,
             barWidth: 3,
             isStrokeCapRound: true,
-            dotData: FlDotData(show: false),
+            dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(show: true, color: Colors.red.withOpacity(0.2)),
           ),
         ],
@@ -383,7 +383,13 @@ class _StatsScreenState extends State<StatsScreen> {
   }
   
   Widget _buildRecentActivity(ActivityProvider provider) {
-    final recentLogs = provider.activityLogs.take(5).toList();
+    // In your recent activity section, make sure you're not filtering by type
+    // Instead of something like:
+    // final recentActivities = activityProvider.activityLogs.where((log) => 
+    //     activityProvider.getActivityById(log.activityId)?.type != ActivityType.spend).toList();
+    
+    // Use this instead:
+    final recentLogs = provider.activityLogs;
     
     if (recentLogs.isEmpty) {
       return const Center(
@@ -394,44 +400,28 @@ class _StatsScreenState extends State<StatsScreen> {
       );
     }
     
-    return ListView.separated(
+    // When displaying the activity in your ListView
+    return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: recentLogs.length,
-      separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
         final log = recentLogs[index];
         final activity = provider.getActivityById(log.activityId);
         
-        if (activity == null) {
-          return const SizedBox.shrink();
-        }
+        if (activity == null) return const SizedBox.shrink();
         
         return ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: CircleAvatar(
-            backgroundColor: activity.type == ActivityType.spend
-                ? Colors.red.withOpacity(0.2)
-                : Colors.green.withOpacity(0.2),
-            child: Icon(
-              activity.type == ActivityType.spend
-                  ? Icons.remove
-                  : Icons.add,
-              color: activity.type == ActivityType.spend
-                  ? Colors.red
-                  : Colors.green,
-            ),
-          ),
           title: Text(activity.name),
-          subtitle: Text(
-            DateFormat('MMM d, yyyy • h:mm a').format(log.timestamp),
-          ),
+          subtitle: Text(DateFormat.yMd().add_jm().format(log.timestamp)),
           trailing: Text(
-            '${activity.type == ActivityType.spend ? '-' : '+'}${log.points}',
+            activity.type == ActivityType.spend 
+                ? '-${activity.points}' 
+                : '+${log.points}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: activity.type == ActivityType.spend
-                  ? Colors.red
+              color: activity.type == ActivityType.spend 
+                  ? Colors.red 
                   : Colors.green,
             ),
           ),
