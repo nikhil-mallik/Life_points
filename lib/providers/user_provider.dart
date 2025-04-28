@@ -40,10 +40,23 @@ class UserProvider with ChangeNotifier {
       if (goalJson != null) {
         try {
           final goalMap = json.decode(goalJson);
+          // Add this method to your UserProvider class
+          IconData getIconFromCodePoint(int codePoint) {
+            // Map code points to constant icons
+            switch (codePoint) {
+              case 0xe3af: return Icons.fitness_center;
+              case 0xe80c: return Icons.school;
+              case 0xe8f9: return Icons.work;
+              // Add more mappings as needed
+              default: return Icons.star; // Default icon
+            }
+          }
+          
+          // Then use it in your goal creation:
           _selectedGoal = Goal(
             id: goalMap['id'],
             name: goalMap['name'],
-            icon: IconData(goalMap['iconCodePoint'], fontFamily: 'MaterialIcons'),
+            icon: getIconFromCodePoint(goalMap['iconCodePoint']),
             color: Color(goalMap['colorValue']),
             description: goalMap['description'],
             defaultActivities: List<String>.from(goalMap['defaultActivities'] ?? []),
