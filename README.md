@@ -38,4 +38,4 @@ Built with Flutter for cross-platform compatibility, LifePoints features:
 - Cloud synchronization across devices
 
 -----------------------------------------------------
-LifePoints: Turn your life into a game worth playing!
+LifePoints: Turn your life into a game worth playing!flutter build apk --release
