@@ -70,11 +70,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
         ],
         bottom: TabBar(
+          labelColor: Colors.black, // Active tab text color
+  unselectedLabelColor: const Color.fromARGB(255, 216, 207, 207), // Dark grey for light theme
+  indicatorColor: Theme.of(context).primaryColor, // Indicator line color
+  labelStyle: const TextStyle(fontWeight: FontWeight.bold),
           controller: _tabController,
           tabs: const [
-            Tab(text: 'Activities'),
-            Tab(text: 'Stats'),
-            Tab(text: 'Goals'),
+             Tab(icon: Icon(Icons.home), text: 'Activities'),
+    Tab(icon: Icon(Icons.bar_chart), text: 'Stats'),
+    Tab(icon: Icon(Icons.flag), text: 'Goals'),
           ],
         ),
       ),
